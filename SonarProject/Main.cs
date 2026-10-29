@@ -1,6 +1,4 @@
-using System;
 using System.IO.Ports;
-using System.Windows.Forms;
 
 namespace SonarProject
 {
@@ -12,13 +10,16 @@ namespace SonarProject
         private DateTime _lastFrameTime;
         private readonly Random _random = new Random();
         private SerialPort _serialPort;
+        private readonly string _portName;
+        private readonly int _baudRate;
+
         private void InitSerialPort()
         {
             _serialPort = new SerialPort();
 
             // Основні параметри підключення
-            _serialPort.PortName = "COM3";     // Номер вашого COM-порту з Диспетчера пристроїв
-            _serialPort.BaudRate = 9600;       // Швидкість має збігатися з Serial.begin(9600) в Arduino
+            _serialPort.PortName = _portName;  // Номер вибраного COM-порту
+            _serialPort.BaudRate = _baudRate;  // Швидкість з'єднання
             _serialPort.DataBits = 8;
             _serialPort.Parity = Parity.None;
             _serialPort.StopBits = StopBits.One;
@@ -32,7 +33,7 @@ namespace SonarProject
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Помилка відкриття порту: {ex.Message}", "Помилка COM-порту",
+                MessageBox.Show($"Помилка відкриття порту ({_portName}): {ex.Message}", "Помилка COM-порту",
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -79,9 +80,12 @@ namespace SonarProject
             base.OnFormClosing(e);
         }
 
-        public Main()
+        public Main(string portName = "COM3", int baudRate = 9600)
         {
-            Text = "180° Radar Simulator";
+            _portName = portName;
+            _baudRate = baudRate;
+
+            Text = $"180° Radar Simulator ({_portName} @ {_baudRate})";
             ClientSize = new Size(800, 480);
             StartPosition = FormStartPosition.CenterScreen;
 
