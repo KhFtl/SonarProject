@@ -9,7 +9,7 @@ namespace SonarProject
         static void Main()
         {
             ApplicationConfiguration.Initialize();
-            Application.Run(new Main());
+            Application.Run(new Settings());
         }
     }
 }
